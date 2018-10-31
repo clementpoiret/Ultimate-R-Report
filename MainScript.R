@@ -172,8 +172,8 @@ mean.dpzv <- data.frame(cbind('Mean',
                    mean(df.total$DPZV3),
                    mean(df.total$DPZV4)), stringsAsFactors = F)
 
-prof17 <- data.frame(df.total[17,c(1,5:8)], stringsAsFactors = F)
-prof8 <- data.frame(df.total[8,c(1,5:8)], stringsAsFactors = F)
+prof17 <- data.frame(df.total[17,c(1,6:9)], stringsAsFactors = F)
+prof8 <- data.frame(df.total[8,c(1,6:9)], stringsAsFactors = F)
 
 colnames(mean.dpzv) <- colnames(prof17)
 colnames(max) <- colnames(prof17)
@@ -195,7 +195,7 @@ write.csv(df.total, 'summarized.csv')
 
 # Plotting ----
 
-radarchart(as.data.frame(df.profile.17), plwd=2, axistype=1,
+radarchart(as.data.frame(df.profile.17), plwd=1, axistype=2,
            cglcol="grey", cglty=1, axislabcol="grey", caxislabels=seq(0,20,5), cglwd=0.8,
            vlcex=0.8)
 
