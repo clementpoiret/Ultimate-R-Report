@@ -138,7 +138,11 @@ df.total <- df.real[df.real$Player!='Mean',] %>%
             DPZV1 = sum(as.numeric(as.character(DPZV1))),
             DPZV2 = sum(as.numeric(as.character(DPZV2))),
             DPZV3 = sum(as.numeric(as.character(DPZV3))),
-            DPZV4 = sum(as.numeric(as.character(DPZV4)))) %>%
+            DPZV4 = sum(as.numeric(as.character(DPZV4))),
+            TZV1 = sum(as.numeric(as.character(TZV1))),
+            TZV2 = sum(as.numeric(as.character(TZV2))),
+            TZV3 = sum(as.numeric(as.character(TZV3))),
+            TZV4 = sum(as.numeric(as.character(TZV4)))) %>%
   arrange(Player)
 
 # Comparing Player 17 (Best), with max/min values and Player 8
