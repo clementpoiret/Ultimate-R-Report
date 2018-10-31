@@ -6,7 +6,7 @@ library(readr)
 library(tidyverse)
 library(fmsb)
 
-setwd('~/Documents/Data/Université/Ultimate')
+setwd('~/Documents/Data/Université/Ultimate-R-Report')
 numbers_of_players = 18
 
 # Reading and cleaning data ----
@@ -110,6 +110,8 @@ for (i in 1:length(real_laps)) {
   df.real <- rbind(df.real, df[df$Laps %in% real_laps[i],])
 }
 
+rm(i, real_laps)
+
 # Summarise ----
 
 # Summarized df using Dplyr
@@ -152,6 +154,15 @@ df.profile.17 <- rbind(max, min, prof17, prof8, mean.dpzv)
 rownames(df.profile.17) <- c('Max', 'Min', '17', '8', 'Mean')
 df.profile.17 <- as.matrix(df.profile.17[,-1])
 class(df.profile.17) <- "numeric"
+
+rm(max, mean.dpzv, min, prof17, prof8)
+
+# Exporting df to use other softwares if needed ----
+
+write.csv(df, 'clean.csv')
+write.csv(df.profile.17, 'player17vs8.csv')
+write.csv(df.real, 'playedlaps.csv')
+write.csv(df.total, 'summarized.csv')
 
 # Plotting ----
 
