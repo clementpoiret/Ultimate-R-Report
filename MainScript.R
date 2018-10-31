@@ -120,8 +120,6 @@ real_laps = c('Laps 3',
               'Laps 23',
               'Laps 25')
 
-df.real <- df[df$Laps %in% real_laps[i],]
-
 df.real <- NULL
 for (i in 1:length(real_laps)) {
   df.real <- rbind(df.real, df[df$Laps %in% real_laps[i],])
