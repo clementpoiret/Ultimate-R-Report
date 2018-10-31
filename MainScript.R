@@ -1,3 +1,5 @@
+# Initial setup ----
+
 rm(list=ls())
 
 library(readr)
@@ -5,6 +7,9 @@ library(tidyverse)
 library(fmsb)
 
 setwd('~/Documents/Data/Université/Ultimate')
+numbers_of_players = 18
+
+# Reading and cleaning data ----
 
 df <- read.csv('Data/ultimate.csv', header=FALSE, stringsAsFactors=FALSE, fileEncoding="latin1", sep = ";")
 
@@ -53,8 +58,7 @@ cnames <- c('Laps',
 colnames(df) <- cnames
 rm(cnames)
 
-numbers_of_players = 18
-
+# Make data uniform (cf. df[,1])
 i <- 1
 while (i <= nrow(df)) {
   print(i)
@@ -64,12 +68,14 @@ while (i <= nrow(df)) {
   i = i + numbers_of_players + 2
 }
 
+# Remove unneeded multiple headers
 i <- 1
 while (i < nrow(df)) {
   df <- df[-i,]
   i = i + numbers_of_players + 1
 }
 
+# Some minor changes
 god <- df[1,"Player"]
 for (i in 1:nrow(df)) {
   if (df[i,"Player"] != god) {
@@ -79,7 +85,10 @@ for (i in 1:nrow(df)) {
   }
 }
 
+# Clean up
 rm(i, max, min, god)
+
+# Creating new df with only relevant laps ----
 
 real_laps = c('Laps 3',
               'Laps 5',
@@ -101,6 +110,9 @@ for (i in 1:length(real_laps)) {
   df.real <- rbind(df.real, df[df$Laps %in% real_laps[i],])
 }
 
+# Summarise ----
+
+# Summarized df using Dplyr
 df.total <- df.real[df.real$Player!='Mean',] %>%
   group_by(Player) %>%
   summarise(TotalDistance = sum(as.numeric(as.character(Distance))),
@@ -112,15 +124,12 @@ df.total <- df.real[df.real$Player!='Mean',] %>%
             DPZV4 = sum(as.numeric(as.character(DPZV4)))) %>%
   arrange(Player)
 
-ggplot(data = df.total,
-       aes(x = Player, y = TotalDistance)) +
-  geom_point() +
-  geom_hline(yintercept = mean(df.total$TotalDistance), linetype="dashed", color = "red")
-
+# Comparing Player 17 (Best), with max/min values and Player 8
 max = data.frame(cbind('Max', max(df.total$DPZV1),
             max(df.total$DPZV2),
             max(df.total$DPZV3),
             max(df.total$DPZV4)), stringsAsFactors = F)
+
 min = data.frame(cbind('Min', min(df.total$DPZV1),
             min(df.total$DPZV2),
             min(df.total$DPZV3),
@@ -143,7 +152,15 @@ df.profile.17 <- rbind(max, min, prof17, prof8, mean.dpzv)
 rownames(df.profile.17) <- c('Max', 'Min', '17', '8', 'Mean')
 df.profile.17 <- as.matrix(df.profile.17[,-1])
 class(df.profile.17) <- "numeric"
+
+# Plotting ----
+
 radarchart(as.data.frame(df.profile.17))
+
+ggplot(data = df.total,
+       aes(x = Player, y = TotalDistance)) +
+  geom_point() +
+  geom_hline(yintercept = mean(df.total$TotalDistance), linetype="dashed", color = "red")
 
 # Plot 2: Same plot with custom features
 colors_border=c( rgb(0.2,0.5,0.5,0.9), rgb(0.8,0.2,0.5,0.9) , rgb(0.7,0.5,0.1,0.9) )
