@@ -22,6 +22,7 @@ rm(list=ls())
 library(readr)
 library(tidyverse)
 library(fmsb)
+library(data.table)
 
 setwd('~/Documents/Data/Université/Ultimate-R-Report')
 numbers_of_players = 18
@@ -75,6 +76,9 @@ cnames <- c('Laps',
 colnames(df) <- cnames
 rm(cnames)
 
+df.team <- data.table(Equipe = c("Orange", "Orange", "Orange", "Orange", "Orange", "Orange", "Bleu", "Bleu", "Bleu", "Bleu", "Bleu", "Bleu", "Jaune", "Jaune", "Jaune", "Jaune", "Jaune", "Jaune"),
+                        Player = c("01","02","03","04","05","06","07","08","09","10","11","12","13","14","15", "16", "17", "18"))
+
 # Make data uniform (cf. df[,1])
 i <- 1
 while (i <= nrow(df)) {
@@ -92,7 +96,7 @@ while (i < nrow(df)) {
   i = i + numbers_of_players + 1
 }
 
-# Some minor changes
+# Some minor changes 
 god <- df[1,"Player"]
 for (i in 1:nrow(df)) {
   if (df[i,"Player"] != god) {
@@ -101,6 +105,10 @@ for (i in 1:nrow(df)) {
     df[i,"Player"] = 'Mean'
   }
 }
+
+df <- left_join(df, df.team)
+df$Length = as.POSIXct(df$Length, format = "%H:%M:%S")
+df$Length = (minute(df$Length)*60+second(df$Length))
 
 # Clean up
 rm(i, max, min, god)
@@ -133,6 +141,7 @@ rm(i, real_laps)
 df.total <- df.real[df.real$Player!='Mean',] %>%
   group_by(Player) %>%
   summarise(TotalDistance = sum(as.numeric(as.character(Distance))),
+            TotalTime = sum(Length),
             MeanDistance = mean(as.numeric(as.character(Distance))),
             Nb.Acc = sum(as.numeric(as.character(Nb.Acc))),
             DPZV1 = sum(as.numeric(as.character(DPZV1))),
@@ -142,7 +151,8 @@ df.total <- df.real[df.real$Player!='Mean',] %>%
             TZV1 = sum(as.numeric(as.character(TZV1))),
             TZV2 = sum(as.numeric(as.character(TZV2))),
             TZV3 = sum(as.numeric(as.character(TZV3))),
-            TZV4 = sum(as.numeric(as.character(TZV4)))) %>%
+            TZV4 = sum(as.numeric(as.character(TZV4))), 
+            Team = unique(as.character(Equipe))) %>%
   arrange(Player)
 
 # Comparing Player 17 (Best), with max/min values and Player 8
@@ -185,7 +195,9 @@ write.csv(df.total, 'summarized.csv')
 
 # Plotting ----
 
-radarchart(as.data.frame(df.profile.17))
+radarchart(as.data.frame(df.profile.17), plwd=2, axistype=1,
+           cglcol="grey", cglty=1, axislabcol="grey", caxislabels=seq(0,20,5), cglwd=0.8,
+           vlcex=0.8)
 
 ggplot(data = df.total,
        aes(x = Player, y = TotalDistance)) +
@@ -204,3 +216,16 @@ radarchart( as.data.frame(df.profile.17)  , axistype=1 ,
             vlcex=0.8
 )
 legend(x=1, y=1, legend = rownames(as.data.frame(df.profile.17)[-c(1,2),]), bty = "n", pch=20 , col=colors_in , text.col = "black", pt.cex=3)
+
+
+radarchart(as.data.frame(df.profile.17), axistype=1, 
+            
+            #custom polygon
+            pcol=rgb(0.2,0.5,0.5,0.9) , pfcol=rgb(0.2,0.5,0.5,0.5) , plwd=4 , 
+            
+            #custom the grid
+            cglcol="grey", cglty=1, axislabcol="grey", caxislabels=seq(0,20,5), cglwd=0.8,
+            
+            #custom labels
+            vlcex=0.8 
+)
