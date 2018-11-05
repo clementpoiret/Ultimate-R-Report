@@ -14,7 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 # Initial setup ----
 
 rm(list=ls())
@@ -193,7 +192,7 @@ write.csv(df.profile.17, 'player17vs8.csv')
 write.csv(df.real, 'playedlaps.csv')
 write.csv(df.total, 'summarized.csv')
 
-# Plotting ----
+# Plotting WIP ----
 
 radarchart(as.data.frame(df.profile.17), plwd=1, axistype=2,
            cglcol="grey", cglty=1, axislabcol="grey", caxislabels=seq(0,20,5), cglwd=0.8,
@@ -204,28 +203,15 @@ ggplot(data = df.total,
   geom_point() +
   geom_hline(yintercept = mean(df.total$TotalDistance), linetype="dashed", color = "red")
 
-# Plot 2: Same plot with custom features
-colors_border=c( rgb(0.2,0.5,0.5,0.9), rgb(0.8,0.2,0.5,0.9) , rgb(0.7,0.5,0.1,0.9) )
 colors_in=c( rgb(0.2,0.5,0.5,0.4), rgb(0.8,0.2,0.5,0.4) , rgb(0.7,0.5,0.1,0.4) )
 radarchart( as.data.frame(df.profile.17)  , axistype=1 ,
             #custom polygon
-            pcol=colors_border , pfcol=colors_in , plwd=4 , plty=1,
+            pcol=colors_in , pfcol=colors_in , plwd=0.1, plty=1,
             #custom the grid
             cglcol="grey", cglty=1, axislabcol="grey", caxislabels=seq(0,600,150), cglwd=0.8,
             #custom labels
             vlcex=0.8
 )
-legend(x=1, y=1, legend = rownames(as.data.frame(df.profile.17)[-c(1,2),]), bty = "n", pch=20 , col=colors_in , text.col = "black", pt.cex=3)
 
-
-radarchart(as.data.frame(df.profile.17), axistype=1, 
-            
-            #custom polygon
-            pcol=rgb(0.2,0.5,0.5,0.9) , pfcol=rgb(0.2,0.5,0.5,0.5) , plwd=4 , 
-            
-            #custom the grid
-            cglcol="grey", cglty=1, axislabcol="grey", caxislabels=seq(0,20,5), cglwd=0.8,
-            
-            #custom labels
-            vlcex=0.8 
-)
+tmp <- t(df.profile.17)
+write.csv(tmp, 'player17vs8_2.csv')
